@@ -19,6 +19,6 @@ public class CurrencyConversionController {
     public CurrencyConversion getCurrencyConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity) {
         CurrencyConversion currencyConversion = proxy.getExchangeValue(from, to);
         return new CurrencyConversion(from, to, currencyConversion.getConversionMultiple(), quantity,
-                currencyConversion.getConversionMultiple().multiply(quantity), 0);
+                currencyConversion.getConversionMultiple().multiply(quantity), currencyConversion.getPort());
     }
 }
