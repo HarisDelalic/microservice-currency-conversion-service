@@ -1,7 +1,7 @@
 package com.dela.microservicecurrencyconversionservice.controllers;
 
+import com.dela.microservicecurrencyconversionservice.configs.feign.CurrencyExchangeServiceProxy;
 import com.dela.microservicecurrencyconversionservice.models.CurrencyConversion;
-import com.dela.microservicecurrencyconversionservice.services.CurrencyConversionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +13,12 @@ import java.math.BigDecimal;
 public class CurrencyConversionController {
 
     @Autowired
-    private CurrencyConversionService currencyConversionService;
+    private CurrencyExchangeServiceProxy proxy;
 
-    @GetMapping("/currency-converter/from/{from}/to/{to}/quantity/{quantity}")
+    @GetMapping("/currency-converter-feign/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion getCurrencyConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity) {
-        CurrencyConversion currencyConversion = currencyConversionService.getCurrencyConversion(from, to);
-        return new CurrencyConversion(from, to, currencyConversion.getConversionMultiple(), quantity, currencyConversion.getConversionMultiple().multiply(quantity), 0);
+        CurrencyConversion currencyConversion = proxy.getExchangeValue(from, to);
+        return new CurrencyConversion(from, to, currencyConversion.getConversionMultiple(), quantity,
+                currencyConversion.getConversionMultiple().multiply(quantity), 0);
     }
 }
